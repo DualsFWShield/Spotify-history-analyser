@@ -1,0 +1,228 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Container */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+/* Header */
+h1, h2, h3 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Upload Section */
+.upload-section label {
+    background-color: #007bff;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.upload-section label:hover {
+    background-color: #0056b3;
+}
+
+#fileInput {
+    display: none;
+}
+
+/* Cards */
+.card {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #343a40;
+}
+
+/* Statistics */
+.stats p {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+}
+
+.stats .row > div {
+    margin-bottom: 1rem;
+}
+
+/* Search and Filters */
+#searchInput {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.3s ease;
+}
+
+#searchInput:focus {
+    border-color: #80bdff;
+    outline: none;
+}
+
+#countryFilter {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.3s ease;
+}
+
+#countryFilter:focus {
+    border-color: #80bdff;
+    outline: none;
+}
+
+/* List Group */
+.list-group-item {
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f1f1f1;
+}
+
+
+/* Tables */
+.table-responsive {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.table th {
+    background-color: #343a40;
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.pagination .page-item .page-link {
+    color: #007bff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    cursor: not-allowed;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+.pagination .page-link:hover:not(.disabled) {
+    background-color: #e9ecef;
+}
+
+/* Export Buttons */
+#exportPdfBtn, #exportImageBtn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#exportPdfBtn {
+    background-color: #dc3545;
+    color: #fff;
+    margin-right: 0.5rem;
+}
+
+#exportPdfBtn:hover {
+    background-color: #c82333;
+}
+
+#exportImageBtn {
+    background-color: #28a745;
+    color: #fff;
+}
+
+#exportImageBtn:hover {
+    background-color: #218838;
+}
+
+/* Charts */
+canvas {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 1rem;
+}
+
+/* Animations avec Animate.css */
+.animate__animated.animate__fadeIn {
+    animation-duration: 1s;
+}
+
+.animate__animated.animate__fadeInDown {
+    animation-duration: 1s;
+}
+
+.animate__animated.animate__fadeInUp {
+    animation-duration: 1s;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .list-group-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .card-body .row > div {
+        margin-bottom: 1rem;
+    }
+}
