@@ -21,7 +21,9 @@
 <body>
     <div class="container my-5">
         <h1 class="text-center mb-4 animate__animated animate__fadeInDown">Analyse de l'Historique d'Écoute</h1>
-        <div class="card p-4 mb-4 animate__animated animate__fadeInUp">
+        
+        <!-- Section d'Upload -->
+        <div class="card p-4 mb-4 animate__animated animate__fadeInUp upload-section">
             <div class="d-flex justify-content-center align-items-center">
                 <input type="file" id="fileInput" accept=".json" class="d-none">
                 <label for="fileInput" class="btn btn-primary">
@@ -30,6 +32,7 @@
             </div>
         </div>
 
+        <!-- Section des Statistiques et Filtres (Cachée au départ) -->
         <div id="stats" class="hidden">
             <!-- Statistiques Générales -->
             <div class="card mb-4 animate__animated animate__fadeIn">
@@ -46,8 +49,8 @@
                             <p><strong>Nombre de pays visités :</strong> <span id="uniqueCountries">0</span></p>
                         </div>
                     </div>
-                    <!-- Boutons d'exportation -->
-                    <div class="d-flex justify-content-end mt-3">
+                    <!-- Boutons d'exportation centrés -->
+                    <div class="d-flex justify-content-center mt-3">
                         <button id="exportPdfBtn" class="btn btn-danger me-2">
                             <i class="fas fa-file-pdf"></i> Exporter en PDF
                         </button>
@@ -62,15 +65,30 @@
             <div class="card mb-4 animate__animated animate__fadeIn">
                 <div class="card-body">
                     <h2 class="card-title">Recherche et Filtres</h2>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
+                    <div class="filter-container">
+                        <div class="mb-3">
                             <input type="text" id="searchInput" class="form-control" placeholder="Rechercher une chanson...">
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <select id="countryFilter" class="form-select">
-                                <option value="">Tous les Pays</option>
-                                <!-- Options dynamiques -->
-                            </select>
+                        <div class="mb-3">
+                            <input type="text" id="artist-filter" class="form-control" placeholder="Filtrer par artiste">
+                        </div>
+                        <div class="mb-3">
+                            <input type="date" id="date-filter" class="form-control" placeholder="Filtrer par date">
+                        </div>
+                        <div class="mb-3">
+                            <input type="week" id="week-filter" class="form-control" placeholder="Filtrer par semaine">
+                        </div>
+                        <div class="mb-3">
+                            <input type="month" id="month-filter" class="form-control" placeholder="Filtrer par mois">
+                        </div>
+                        <div class="mb-3">
+                            <input type="number" id="year-filter" class="form-control" placeholder="Filtrer par année">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" id="platform-filter" class="form-control" placeholder="Filtrer par plateforme">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" id="device-filter" class="form-control" placeholder="Filtrer par appareil">
                         </div>
                     </div>
                 </div>
@@ -97,11 +115,11 @@
                 </div>
             </div>
 
-            <!-- Chansons Préférées -->
+            <!-- Chansons Préférées centrées -->
             <div class="card mb-4 animate__animated animate__fadeIn">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <h2 class="card-title">Chansons Préférées</h2>
-                    <ul id="topTracksList" class="list-group">
+                    <ul id="topTracksList" class="list-group justify-content-center">
                         <!-- Chansons préférées dynamiques -->
                     </ul>
                 </div>
@@ -143,19 +161,19 @@
                 <div class="card-body">
                     <h2 class="card-title">Statistiques Avancées</h2>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-4">
                             <p><strong>Temps d'écoute par semaine :</strong></p>
                             <canvas id="weeklyHoursChart"></canvas>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-4">
                             <p><strong>Distribution des raisons de fin de lecture :</strong></p>
                             <canvas id="reasonEndChart"></canvas>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-4">
                             <p><strong>Utilisation du mode incognito :</strong></p>
                             <canvas id="incognitoChart"></canvas>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-4">
                             <p><strong>Plateformes utilisées :</strong></p>
                             <canvas id="platformUsageChart"></canvas>
                         </div>
@@ -163,11 +181,10 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Bootstrap JS et dépendances -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Script personnalisé -->
-    <script src="script.js"></script>
-</body>
+        <!-- Bootstrap JS et dépendances -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Script personnalisé -->
+        <script src="script.js"></script>
+    </body>
 </html>

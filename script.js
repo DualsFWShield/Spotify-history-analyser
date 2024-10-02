@@ -2,8 +2,14 @@
 document.getElementById('fileInput').addEventListener('change', handleFile, false);
 
 // Écouter les événements de recherche et de filtrage
-document.getElementById('searchInput').addEventListener('input', filterHistory, false);
-document.getElementById('countryFilter').addEventListener('change', filterHistory, false);
+document.getElementById('searchInput').addEventListener('input', filterAndSearch, false);
+document.getElementById('artist-filter').addEventListener('input', filterAndSearch, false);
+document.getElementById('date-filter').addEventListener('change', filterAndSearch, false);
+document.getElementById('week-filter').addEventListener('input', filterAndSearch, false);
+document.getElementById('month-filter').addEventListener('input', filterAndSearch, false);
+document.getElementById('year-filter').addEventListener('input', filterAndSearch, false);
+document.getElementById('platform-filter').addEventListener('input', filterAndSearch, false);
+document.getElementById('device-filter').addEventListener('input', filterAndSearch, false);
 
 // Écouter les événements d'exportation
 document.getElementById('exportPdfBtn').addEventListener('click', exportToPDF, false);
@@ -14,7 +20,7 @@ let allData = [];
 let filteredData = [];
 let uniqueCountries = new Set();
 
-// Variables pour la pagination
+// Variables pour la pagination (non utilisées car affichage complet)
 const rowsPerPage = 50;
 let currentPage = 1;
 let totalPages = 1;
@@ -43,7 +49,7 @@ function handleFile(event) {
             processData(data);
         } catch (error) {
             alert("Erreur lors de la lecture du fichier JSON. Assurez-vous que le fichier est correctement formaté.");
-            console.error(error);
+            console.error("Détails de l'erreur:", error);
         }
     };
     reader.readAsText(file);
@@ -61,9 +67,6 @@ function processData(data) {
     filteredData = data;
     uniqueCountries = new Set(data.map(record => record.conn_country || "Inconnu"));
 
-    // Mettre à jour le filtre des pays
-    updateCountryFilter();
-
     // Calculer les statistiques générales
     calculateGeneralStats();
 
@@ -76,18 +79,6 @@ function processData(data) {
 
     // Afficher les statistiques
     document.getElementById('stats').classList.remove('hidden');
-}
-
-// Fonction pour mettre à jour le filtre des pays
-function updateCountryFilter() {
-    const countryFilter = document.getElementById('countryFilter');
-    countryFilter.innerHTML = '<option value="">Tous les Pays</option>';
-    Array.from(uniqueCountries).sort().forEach(country => {
-        const option = document.createElement('option');
-        option.value = country;
-        option.textContent = country;
-        countryFilter.appendChild(option);
-    });
 }
 
 // Fonction pour calculer les statistiques générales
@@ -151,6 +142,7 @@ function generateCharts() {
         const track = record.master_metadata_track_name || "Inconnu";
         trackCounts[track] = (trackCounts[track] || 0) + (record.ms_played || 0);
     });
+
     const sortedTracks = Object.entries(trackCounts).sort((a, b) => b[1] - a[1]);
     const topTracks = sortedTracks.slice(0, 10);
     const topTracksLabels = topTracks.map(item => item[0]);
@@ -318,69 +310,6 @@ function generateCharts() {
             }
         }
     });
-
-    // Utilisation du mode incognito
-    const incognitoCounts = { "Oui": 0, "Non": 0 };
-    filteredData.forEach(record => {
-        const incognito = record.incognito_mode ? "Oui" : "Non";
-        incognitoCounts[incognito] = (incognitoCounts[incognito] || 0) + 1;
-    });
-    const incognitoLabels = Object.keys(incognitoCounts);
-    const incognitoData = Object.values(incognitoCounts);
-
-    const ctxIncognito = document.getElementById('incognitoChart').getContext('2d');
-    incognitoChart = new Chart(ctxIncognito, {
-        type: 'pie',
-        data: {
-            labels: incognitoLabels,
-            datasets: [{
-                label: 'Mode Incognito',
-                data: incognitoData,
-                backgroundColor: ['rgba(108, 117, 125, 0.6)', 'rgba(23, 162, 184, 0.6)']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { 
-                legend: { position: 'bottom' },
-                tooltip: { enabled: true }
-            }
-        }
-    });
-
-    // Utilisation des plateformes
-    const platformUsage = {};
-    filteredData.forEach(record => {
-        const platform = record.platform || "Inconnu";
-        platformUsage[platform] = (platformUsage[platform] || 0) + 1;
-    });
-    const platformUsageLabels = Object.keys(platformUsage);
-    const platformUsageData = Object.values(platformUsage);
-
-    const ctxPlatformUsage = document.getElementById('platformUsageChart').getContext('2d');
-    platformUsageChart = new Chart(ctxPlatformUsage, {
-        type: 'bar',
-        data: {
-            labels: platformUsageLabels,
-            datasets: [{
-                label: 'Nombre d\'Utilisations',
-                data: platformUsageData,
-                backgroundColor: generateColor(platformUsageLabels.length)
-            }]
-        },
-        options: {
-            responsive: true,
-            indexAxis: 'y',
-            plugins: { 
-                legend: { display: false },
-                tooltip: { enabled: true }
-            },
-            scales: {
-                x: { beginAtZero: true, title: { display: true, text: 'Nombre' } },
-                y: { title: { display: true, text: 'Plateforme' } }
-            }
-        }
-    });
 }
 
 // Fonction pour détruire les graphiques existants
@@ -391,8 +320,6 @@ function destroyCharts() {
     if (countryChart) countryChart.destroy();
     if (weeklyHoursChart) weeklyHoursChart.destroy();
     if (reasonEndChart) reasonEndChart.destroy();
-    if (incognitoChart) incognitoChart.destroy();
-    if (platformUsageChart) platformUsageChart.destroy();
 }
 
 // Fonction pour remplir la liste des chansons préférées
@@ -437,29 +364,22 @@ function fillTopTracks() {
     });
 }
 
-// Fonction pour remplir la table de l'historique avec pagination
+// Fonction pour remplir la table de l'historique sans pagination
 function fillHistoryTable() {
     const historyTableBody = document.querySelector('#historyTable tbody');
-    historyTableBody.innerHTML = "";
+    historyTableBody.innerHTML = ""; // Effacer le contenu précédent
 
-    // Calculer le nombre total de pages
-    totalPages = Math.ceil(filteredData.length / rowsPerPage);
-    if (currentPage > totalPages) currentPage = totalPages;
-    if (currentPage < 1) currentPage = 1;
+    // Trier les données par date décroissante
+    const sortedData = filteredData.sort((a, b) => new Date(b.ts) - new Date(a.ts));
 
-    // Déterminer les données à afficher sur la page actuelle
-    const start = (currentPage - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-    const pageData = filteredData.slice(start, end);
-
-    pageData.sort((a, b) => new Date(b.ts) - new Date(a.ts)); // Trier par date décroissante
-    pageData.forEach(record => {
+    // Remplir la table avec toutes les données
+    sortedData.forEach(record => {
         const tr = document.createElement('tr');
 
         // Date
         const dateTd = document.createElement('td');
         const date = new Date(record.ts);
-        dateTd.textContent = date.toLocaleString();
+        dateTd.textContent = date.toLocaleString(); // Afficher la date au format local
         tr.appendChild(dateTd);
 
         // Chanson
@@ -474,7 +394,7 @@ function fillHistoryTable() {
 
         // Durée Écoutée
         const durationTd = document.createElement('td');
-        durationTd.textContent = `${(record.ms_played / 1000).toFixed(0)} s`;
+        durationTd.textContent = `${(record.ms_played / 1000).toFixed(0)} s`; // Convertir ms à secondes
         tr.appendChild(durationTd);
 
         // Pays
@@ -492,42 +412,61 @@ function fillHistoryTable() {
         if (record.spotify_track_uri) {
             const link = document.createElement('a');
             link.href = `https://open.spotify.com/track/${record.spotify_track_uri.split(':').pop()}`;
-            link.target = "_blank";
-            link.innerHTML = '<i class="fab fa-spotify fa-lg text-success"></i>';
+            link.target = "_blank"; // Ouvrir le lien dans un nouvel onglet
+            link.innerHTML = '<i class="fab fa-spotify fa-lg text-success"></i>'; // Icône Spotify
             spotifyTd.appendChild(link);
         } else {
-            spotifyTd.textContent = "N/A";
+            spotifyTd.textContent = "N/A"; // Indiquer que le lien n'est pas disponible
         }
         tr.appendChild(spotifyTd);
 
-        historyTableBody.appendChild(tr);
+        historyTableBody.appendChild(tr); // Ajouter la ligne à la table
     });
-
-    // Mettre à jour les contrôles de pagination
-    updatePagination();
 }
 
-// Fonction de recherche et de filtrage
-function filterHistory() {
+// Fonction de recherche et de filtrage combinée
+function filterAndSearch() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const selectedCountry = document.getElementById('countryFilter').value;
+    const artistFilter = document.getElementById('artist-filter').value.toLowerCase();
+    const dateFilter = document.getElementById('date-filter').value;
+    const weekFilter = document.getElementById('week-filter').value.toLowerCase();
+    const monthFilter = document.getElementById('month-filter').value.toLowerCase();
+    const yearFilter = document.getElementById('year-filter').value.toLowerCase();
+    const platformFilter = document.getElementById('platform-filter').value.toLowerCase();
+    const deviceFilter = document.getElementById('device-filter').value.toLowerCase();
 
+    // Filtrer les données en fonction de la recherche et des filtres appliqués
     filteredData = allData.filter(record => {
         const trackName = (record.master_metadata_track_name || "").toLowerCase();
-        const country = record.conn_country || "Inconnu";
+        const artistName = (record.master_metadata_album_artist_name || "").toLowerCase();
+        const platform = (record.platform || "").toLowerCase();
+        const device = (record.device || "").toLowerCase(); // Assurez-vous que 'device' est une propriété valide
+        const date = new Date(record.ts);
+        const recordDate = date.toISOString().slice(0, 10); // Format YYYY-MM-DD
+        const recordWeek = getWeekNumber(date); // Fonction pour obtenir le numéro de semaine
+        const recordMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; // Format YYYY-MM
+        const recordYear = `${date.getFullYear()}`; // Format YYYY
 
         const matchesSearch = trackName.includes(searchTerm);
-        const matchesCountry = selectedCountry === "" || country === selectedCountry;
+        const matchesArtist = artistFilter ? artistName.includes(artistFilter) : true;
+        const matchesDate = dateFilter ? recordDate === dateFilter : true;
+        const matchesWeek = weekFilter ? recordWeek.toLowerCase() === weekFilter : true;
+        const matchesMonth = monthFilter ? recordMonth === monthFilter : true;
+        const matchesYear = yearFilter ? recordYear === yearFilter : true;
+        const matchesPlatform = platformFilter ? platform.includes(platformFilter) : true;
+        const matchesDevice = deviceFilter ? device.includes(deviceFilter) : true;
 
-        return matchesSearch && matchesCountry;
+        return matchesSearch && matchesArtist && matchesDate && matchesWeek && matchesMonth && matchesYear && matchesPlatform && matchesDevice;
     });
 
-    currentPage = 1; // Réinitialiser à la première page
+    // Réinitialiser à la première page si pagination est en place
+    currentPage = 1;
 
+    // Calculer les statistiques générales et mettre à jour les visualisations
     calculateGeneralStats();
     generateCharts();
     fillTopTracks();
-    fillHistoryTable();
+    fillHistoryTable(); // Remplir la table avec les données filtrées
 }
 
 // Fonction pour obtenir le numéro de semaine
@@ -551,63 +490,11 @@ function generateColor(count) {
     return colors;
 }
 
-// Fonction pour mettre à jour les contrôles de pagination
+// Fonction pour mettre à jour les contrôles de pagination (Non utilisé car affichage complet)
 function updatePagination(currentPage, totalPages) {
-    const pagination = document.querySelector('.pagination');
-    pagination.innerHTML = ''; // Vider l'élément de pagination
-    
-    const maxVisiblePages = 5; // Nombre de pages visibles à la fois
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-    // Ajuster si nous sommes près du début ou de la fin
-    if (endPage - startPage + 1 < maxVisiblePages) {
-        startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-
-    // Bouton "Précédent"
-    if (currentPage > 1) {
-        const prevLink = document.createElement('a');
-        prevLink.classList.add('pagelink');
-        prevLink.textContent = 'Précédent';
-        prevLink.href = '#';
-        prevLink.addEventListener('click', function() {
-            updatePagination(currentPage - 1, totalPages);
-            fillHistoryTable(currentPage - 1); // Mettre à jour le tableau d'historique
-        });
-        pagination.appendChild(prevLink);
-    }
-
-    // Pages numérotées
-    for (let i = startPage; i <= endPage; i++) {
-        const pageLink = document.createElement('a');
-        pageLink.classList.add('pagelink');
-        if (i === currentPage) {
-            pageLink.classList.add('active'); // Marquer la page actuelle
-        }
-        pageLink.textContent = i;
-        pageLink.href = '#';
-        pageLink.addEventListener('click', function() {
-            updatePagination(i, totalPages);
-            fillHistoryTable(i); // Mettre à jour le tableau d'historique
-        });
-        pagination.appendChild(pageLink);
-    }
-
-    // Bouton "Suivant"
-    if (currentPage < totalPages) {
-        const nextLink = document.createElement('a');
-        nextLink.classList.add('pagelink');
-        nextLink.textContent = 'Suivant';
-        nextLink.href = '#';
-        nextLink.addEventListener('click', function() {
-            updatePagination(currentPage + 1, totalPages);
-            fillHistoryTable(currentPage + 1); // Mettre à jour le tableau d'historique
-        });
-        pagination.appendChild(nextLink);
-    }
+    // Suppression de la pagination car l'affichage est complet
+    // Si vous souhaitez conserver la pagination, implémentez-la ici
 }
-
 
 // Fonction pour exporter les statistiques en PDF
 async function exportToPDF() {
@@ -634,7 +521,7 @@ async function exportToPDF() {
             const imgData = canvas.toDataURL('image/png', 1.0);
             doc.addImage(imgData, 'PNG', 10, yPosition, 190, 100);
             yPosition += 105;
-            if (yPosition > 270) { // Ajouter une nouvelle page si nécessaire
+            if (yPosition > 250) { // Ajouter une nouvelle page si nécessaire
                 doc.addPage();
                 yPosition = 15;
             }
