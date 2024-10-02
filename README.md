@@ -2,6 +2,8 @@
 
 Bienvenue dans le projet **Historique d'Écoute**! Ce projet vous permet d'importer un fichier JSON contenant l'historique d'écoute de musique et d'analyser vos données de streaming. Vous pourrez visualiser des statistiques détaillées sur votre écoute, rechercher des titres et explorer vos préférences musicales.
 
+[Demo](https://dualsfwshield.github.io/Spotify-history-analyser/)
+
 ## Table des Matières
 - [Fonctionnalités](#fonctionnalités)
 - [Technologies Utilisées](#technologies-utilisées)
