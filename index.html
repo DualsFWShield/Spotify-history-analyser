@@ -8,11 +8,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Font Awesome pour les icônes -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Animate.css pour les animations -->
+    <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <!-- jsPDF et html2canvas pour l'exportation -->
+    <!-- jsPDF et html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Styles personnalisés -->
@@ -20,9 +20,10 @@
 </head>
 <body>
     <div class="container my-5">
+        <!-- Titre principal -->
         <h1 class="text-center mb-4 animate__animated animate__fadeInDown">Analyse de l'Historique d'Écoute</h1>
-        
-        <!-- Section d'Upload -->
+
+        <!-- Section Upload -->
         <div class="card p-4 mb-4 animate__animated animate__fadeInUp upload-section">
             <div class="d-flex justify-content-center align-items-center">
                 <input type="file" id="fileInput" accept=".json" class="d-none">
@@ -32,7 +33,7 @@
             </div>
         </div>
 
-        <!-- Section des Statistiques et Filtres (Cachée au départ) -->
+        <!-- Section Statistiques et Filtres -->
         <div id="stats" class="hidden">
             <!-- Statistiques Générales -->
             <div class="card mb-4 animate__animated animate__fadeIn">
@@ -49,7 +50,6 @@
                             <p><strong>Nombre de pays visités :</strong> <span id="uniqueCountries">0</span></p>
                         </div>
                     </div>
-                    <!-- Boutons d'exportation centrés -->
                     <div class="d-flex justify-content-center mt-3">
                         <button id="exportPdfBtn" class="btn btn-danger me-2">
                             <i class="fas fa-file-pdf"></i> Exporter en PDF
@@ -61,35 +61,19 @@
                 </div>
             </div>
 
-            <!-- Recherches et Filtres -->
+            <!-- Filtres et Recherche -->
             <div class="card mb-4 animate__animated animate__fadeIn">
                 <div class="card-body">
                     <h2 class="card-title">Recherche et Filtres</h2>
                     <div class="filter-container">
-                        <div class="mb-3">
-                            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher une chanson...">
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" id="artist-filter" class="form-control" placeholder="Filtrer par artiste">
-                        </div>
-                        <div class="mb-3">
-                            <input type="date" id="date-filter" class="form-control" placeholder="Filtrer par date">
-                        </div>
-                        <div class="mb-3">
-                            <input type="week" id="week-filter" class="form-control" placeholder="Filtrer par semaine">
-                        </div>
-                        <div class="mb-3">
-                            <input type="month" id="month-filter" class="form-control" placeholder="Filtrer par mois">
-                        </div>
-                        <div class="mb-3">
-                            <input type="number" id="year-filter" class="form-control" placeholder="Filtrer par année">
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" id="platform-filter" class="form-control" placeholder="Filtrer par plateforme">
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" id="device-filter" class="form-control" placeholder="Filtrer par appareil">
-                        </div>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher une chanson...">
+                        <input type="text" id="artist-filter" class="form-control" placeholder="Filtrer par artiste">
+                        <input type="date" id="date-filter" class="form-control" placeholder="Filtrer par date">
+                        <input type="week" id="week-filter" class="form-control" placeholder="Filtrer par semaine">
+                        <input type="month" id="month-filter" class="form-control" placeholder="Filtrer par mois">
+                        <input type="number" id="year-filter" class="form-control" placeholder="Filtrer par année">
+                        <input type="text" id="platform-filter" class="form-control" placeholder="Filtrer par plateforme">
+                        <input type="text" id="device-filter" class="form-control" placeholder="Filtrer par appareil">
                     </div>
                 </div>
             </div>
@@ -115,17 +99,7 @@
                 </div>
             </div>
 
-            <!-- Chansons Préférées centrées -->
-            <div class="card mb-4 animate__animated animate__fadeIn">
-                <div class="card-body text-center">
-                    <h2 class="card-title">Chansons Préférées</h2>
-                    <ul id="topTracksList" class="list-group justify-content-center">
-                        <!-- Chansons préférées dynamiques -->
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Historique Complet avec Pagination -->
+            <!-- Historique avec Pagination -->
             <div class="card mb-4 animate__animated animate__fadeIn">
                 <div class="card-body">
                     <h2 class="card-title">Historique Complet</h2>
@@ -136,18 +110,17 @@
                                     <th>Date</th>
                                     <th>Chanson</th>
                                     <th>Artiste</th>
-                                    <th>Durée Écoutée</th>
+                                    <th>Durée</th>
                                     <th>Pays</th>
                                     <th>Plateforme</th>
                                     <th>Spotify</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Historique dynamique -->
+                                <!-- Données dynamiques -->
                             </tbody>
                         </table>
                     </div>
-                    <!-- Contrôles de Pagination -->
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center" id="pagination">
                             <!-- Pagination dynamique -->
@@ -155,36 +128,11 @@
                     </nav>
                 </div>
             </div>
-
-            <!-- Statistiques Avancées -->
-            <div class="card mb-4 animate__animated animate__fadeIn">
-                <div class="card-body">
-                    <h2 class="card-title">Statistiques Avancées</h2>
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <p><strong>Temps d'écoute par semaine :</strong></p>
-                            <canvas id="weeklyHoursChart"></canvas>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <p><strong>Distribution des raisons de fin de lecture :</strong></p>
-                            <canvas id="reasonEndChart"></canvas>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <p><strong>Utilisation du mode incognito :</strong></p>
-                            <canvas id="incognitoChart"></canvas>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <p><strong>Plateformes utilisées :</strong></p>
-                            <canvas id="platformUsageChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
+    </div>
 
-        <!-- Bootstrap JS et dépendances -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Script personnalisé -->
-        <script src="script.js"></script>
-    </body>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
 </html>
