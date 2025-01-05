@@ -15,124 +15,167 @@
     <!-- jsPDF et html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- Styles personnalisés -->
-    <link rel="stylesheet" href="styles.css">
+    <!-- Styles persos -->
+    <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-    <div class="container my-5">
-        <!-- Titre principal -->
-        <h1 class="text-center mb-4 animate__animated animate__fadeInDown">Analyse de l'Historique d'Écoute</h1>
+    <div class="container my-3">
+        <h1 class="text-center animate__animated animate__fadeInDown">
+            Analyse de l'Historique d'Écoute
+        </h1>
 
-        <!-- Section Upload -->
-        <div class="card p-4 mb-4 animate__animated animate__fadeInUp upload-section">
+        <!-- Sélection JSON -->
+        <div class="card p-4 mb-3">
             <div class="d-flex justify-content-center align-items-center">
-                <input type="file" id="fileInput" accept=".json" class="d-none">
+                <input type="file" id="fileInput" accept=".json" class="d-none"/>
                 <label for="fileInput" class="btn btn-primary">
                     <i class="fas fa-upload"></i> Choisir un fichier JSON
                 </label>
             </div>
         </div>
 
-        <!-- Section Statistiques et Filtres -->
+        <!-- Filtres -->
+        <div id="advancedFilters" class="hidden card p-4 mb-3">
+            <div class="row mb-3">
+                <div class="col-sm-6 col-lg-3">
+                    <label>Recherche par artiste</label>
+                    <input type="text" id="artistFilter" class="form-control"/>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <label>Recherche par mot-clé</label>
+                    <input type="text" id="keywordFilter" class="form-control"/>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <label>Date début</label>
+                    <input type="date" id="startDate" class="form-control"/>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <label>Date fin</label>
+                    <input type="date" id="endDate" class="form-control"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-lg-3">
+                    <label>Type du graphique (écoute mensuelle)</label>
+                    <select id="monthlyChartType" class="form-select">
+                        <option value="line">Line</option>
+                        <option value="bar">Bar</option>
+                        <option value="radar">Radar</option>
+                        <option value="polarArea">PolarArea</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="pie">Pie</option>
+                    </select>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <label>Type du graphique (top artistes)</label>
+                    <select id="artistChartType" class="form-select">
+                        <option value="bar">Bar</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="pie">Pie</option>
+                        <option value="polarArea">PolarArea</option>
+                        <option value="line">Line</option>
+                        <option value="radar">Radar</option>
+                    </select>
+                </div>
+            </div>
+            <button id="applyFiltersBtn" class="btn btn-success mt-3">Appliquer</button>
+        </div>
+
+        <!-- Stats -->
         <div id="stats" class="hidden">
-            <!-- Statistiques Générales -->
-            <div class="card mb-4 animate__animated animate__fadeIn">
+            <div class="card mb-3">
                 <div class="card-body">
                     <h2 class="card-title">Statistiques Générales</h2>
                     <div class="row">
                         <div class="col-md-4">
-                            <p><strong>Nombre total d'heures d'écoute :</strong> <span id="totalHours">0</span> heures</p>
+                            <p><strong>Heures d'écoute :</strong> <span id="totalHours">0</span> h</p>
                         </div>
                         <div class="col-md-4">
-                            <p><strong>Nombre total de chansons écoutées :</strong> <span id="totalTracks">0</span></p>
+                            <p><strong>Nombre total de lectures :</strong> <span id="totalPlays">0</span></p>
                         </div>
                         <div class="col-md-4">
-                            <p><strong>Nombre de pays visités :</strong> <span id="uniqueCountries">0</span></p>
+                            <p><strong>Artiste le plus écouté :</strong> <span id="topArtist">N/A</span></p>
                         </div>
-                    </div>
-                    <div class="d-flex justify-content-center mt-3">
-                        <button id="exportPdfBtn" class="btn btn-danger me-2">
-                            <i class="fas fa-file-pdf"></i> Exporter en PDF
-                        </button>
-                        <button id="exportImageBtn" class="btn btn-success">
-                            <i class="fas fa-image"></i> Exporter en Image
-                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Filtres et Recherche -->
-            <div class="card mb-4 animate__animated animate__fadeIn">
+            <!-- Top 5 -->
+            <div class="card mb-3">
                 <div class="card-body">
-                    <h2 class="card-title">Recherche et Filtres</h2>
-                    <div class="filter-container">
-                        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher une chanson...">
-                        <input type="text" id="artist-filter" class="form-control" placeholder="Filtrer par artiste">
-                        <input type="date" id="date-filter" class="form-control" placeholder="Filtrer par date">
-                        <input type="week" id="week-filter" class="form-control" placeholder="Filtrer par semaine">
-                        <input type="month" id="month-filter" class="form-control" placeholder="Filtrer par mois">
-                        <input type="number" id="year-filter" class="form-control" placeholder="Filtrer par année">
-                        <input type="text" id="platform-filter" class="form-control" placeholder="Filtrer par plateforme">
-                        <input type="text" id="device-filter" class="form-control" placeholder="Filtrer par appareil">
-                    </div>
+                    <h2 class="card-title">Top 5 Titres</h2>
+                    <ul id="favorites"></ul>
                 </div>
             </div>
 
-            <!-- Visualisations -->
-            <div class="card mb-4 animate__animated animate__fadeIn">
-                <div class="card-body">
-                    <h2 class="card-title">Visualisations</h2>
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <canvas id="hoursChart"></canvas>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <canvas id="topTracksChart"></canvas>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <canvas id="platformChart"></canvas>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <canvas id="countryChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Historique avec Pagination -->
-            <div class="card mb-4 animate__animated animate__fadeIn">
+            <!-- Historique -->
+            <div class="card mb-3">
                 <div class="card-body">
                     <h2 class="card-title">Historique Complet</h2>
-                    <div class="table-responsive">
-                        <table class="table table-striped" id="historyTable">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Chanson</th>
-                                    <th>Artiste</th>
-                                    <th>Durée</th>
-                                    <th>Pays</th>
-                                    <th>Plateforme</th>
-                                    <th>Spotify</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Données dynamiques -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center" id="pagination">
-                            <!-- Pagination dynamique -->
-                        </ul>
-                    </nav>
+                    <div id="historyList" style="max-height:300px; overflow:auto;"></div>
                 </div>
+            </div>
+
+            <!-- Graphiques -->
+            <div class="row mb-3">
+                <div class="col-lg-6 col-sm-12 mb-3">
+                    <canvas id="listeningTimeChart"></canvas>
+                </div>
+                <div class="col-lg-6 col-sm-12 mb-3">
+                    <canvas id="genreChart"></canvas>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-lg-6 col-sm-12 mb-3">
+                    <select class="form-select mb-2" id="weeklyChartType">
+                        <option value="bar">Bar</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="pie">Pie</option>
+                        <option value="polarArea">PolarArea</option>
+                        <option value="line">Line</option>
+                        <option value="radar">Radar</option>
+                    </select>
+                    <canvas id="dayOfWeekChart"></canvas>
+                </div>
+                <div class="col-lg-6 col-sm-12 mb-3">
+                    <select class="form-select mb-2" id="hourlyChartType">
+                        <option value="bar">Bar</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="pie">Pie</option>
+                        <option value="polarArea">PolarArea</option>
+                        <option value="bubble">Bubble</option>
+                        <option value="scatter">Scatter</option>
+                        <option value="line">Line</option>
+                        <option value="radar">Radar</option>
+                    </select>
+                    <canvas id="hourOfDayChart"></canvas>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <select class="form-select mb-2" id="albumChartType">
+                        <option value="bar">Bar</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="pie">Pie</option>
+                        <option value="polarArea">PolarArea</option>
+                        <option value="line">Line</option>
+                        <option value="radar">Radar</option>
+                    </select>
+                    <canvas id="topAlbumChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Boutons d'export/partage -->
+            <div class="d-flex justify-content-center">
+                <button id="exportPdfBtn" class="btn btn-danger mx-1">Exporter en PDF</button>
+                <button id="exportImageBtn" class="btn btn-primary mx-1">Exporter en Image</button>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script principal -->
     <script src="script.js"></script>
 </body>
 </html>
